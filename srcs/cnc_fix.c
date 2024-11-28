@@ -46,15 +46,6 @@ int main(int ac, char **av)
     }
 
     char path[512];
-
-    #ifdef _WIN32
-        strcpy(path, ".\\nc_file\\");
-        strcat(path, av[1]);
-    #else
-        strcpy(path, "./nc_file/");
-        strcat(path, av[1]);
-    #endif
-
     FILE    *nc_file;
     float old_num_x;
     float old_num_y;
@@ -64,7 +55,16 @@ int main(int ac, char **av)
     int y_direction;
     int pos;
 
-    nc_file = fopen(path, "r+");
+    #ifdef _WIN32
+        strcpy(path, ".\\nc_file\\");
+        strcat(path, av[1]);
+    	nc_file = fopen(path, "rb+");
+    #else
+        strcpy(path, "./nc_file/");
+        strcat(path, av[1]);
+    	nc_file = fopen(path, "r+");
+    #endif
+
     old_num_x = 0;
     old_num_y = 0;
     while (42)
