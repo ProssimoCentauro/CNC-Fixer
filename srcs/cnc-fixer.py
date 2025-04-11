@@ -3,8 +3,21 @@ import tkinter as tk
 from tkinter import filedialog, messagebox
 import os
 import json
+import sys
 
-SETTINGS_FILE = os.path.join("./conf/backlash_fixer_settings.json")
+if getattr(sys, 'frozen', False):
+    app_dir = os.path.dirname(sys.executable)
+else:
+    app_dir = os.path.dirname(os.path.abspath(__file__))
+
+conf_dir = os.path.join(app_dir, "conf")
+if not os.path.exists(conf_dir):
+    try:
+        os.makedirs(conf_dir)
+    except Exception as e:
+        print(f"Error creating conf directory: {e}")
+
+SETTINGS_FILE = os.path.join(conf_dir, "backlash_fixer_settings.json")
 
 def estrai_coordinate(linea):
     x = y = z = None
@@ -44,7 +57,7 @@ def applica_backlash():
         offset_y = float(entry_y.get())
         offset_z = float(entry_z.get())
     except ValueError:
-        messagebox.showerror("Error!", "Please enter valid numeric values ​​for offsets.")
+        messagebox.showerror("Error!", "Please enter valid numeric values for offsets.")
         return
 
     filepath = entry_file.get()
@@ -99,7 +112,7 @@ def applica_backlash():
         messagebox.showinfo("Done!", f"File saved as:\n{output_path}")
 
     except Exception as e:
-        messagebox.showerror("Error!", f"An error occured:\n{str(e)}")
+        messagebox.showerror("Error!", f"An error occurred:\n{str(e)}")
 
 def save_settings():
     settings = {
@@ -113,7 +126,7 @@ def save_settings():
         with open(SETTINGS_FILE, "w") as f:
             json.dump(settings, f)
     except Exception as e:
-        print(f"Error savings settings!: {e}")
+        print(f"Error saving settings: {e}")
 
 def load_settings():
     if not os.path.exists(SETTINGS_FILE):
@@ -128,7 +141,7 @@ def load_settings():
         with open(SETTINGS_FILE, "r") as f:
             return json.load(f)
     except Exception as e:
-        print(f"Error loading settings!: {e}")
+        print(f"Error loading settings: {e}")
         return {
             "last_file": "",
             "offset_x": "0.02",
@@ -136,10 +149,8 @@ def load_settings():
             "offset_z": "0.01"
         }
 
-# GUI
 root = tk.Tk()
-root.title("CNC backlash Fixer")
-
+root.title("CNC Backlash Fixer")
 
 settings = load_settings()
 
@@ -165,7 +176,6 @@ entry_z.insert(0, settings["offset_z"])
 entry_z.grid(row=7, column=0, padx=5)
 
 tk.Button(root, text="Apply Backlash Fix", command=applica_backlash, bg="lightgreen").grid(row=8, column=0, columnspan=2, pady=10)
-
 
 root.protocol("WM_DELETE_WINDOW", lambda: [save_settings(), root.destroy()])
 
