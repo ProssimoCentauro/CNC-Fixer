@@ -102,7 +102,6 @@ def applica_backlash():
         messagebox.showerror("Error!", f"An error occured:\n{str(e)}")
 
 def save_settings():
-    """Salva le impostazioni correnti in un file JSON"""
     settings = {
         "last_file": entry_file.get(),
         "offset_x": entry_x.get(),
@@ -114,10 +113,9 @@ def save_settings():
         with open(SETTINGS_FILE, "w") as f:
             json.dump(settings, f)
     except Exception as e:
-        print(f"Errore nel salvare le impostazioni: {e}")
+        print(f"Error savings settings!: {e}")
 
 def load_settings():
-    """Carica le impostazioni da un file JSON"""
     if not os.path.exists(SETTINGS_FILE):
         return {
             "last_file": "",
@@ -130,7 +128,7 @@ def load_settings():
         with open(SETTINGS_FILE, "r") as f:
             return json.load(f)
     except Exception as e:
-        print(f"Errore nel caricare le impostazioni: {e}")
+        print(f"Error loading settings!: {e}")
         return {
             "last_file": "",
             "offset_x": "0.02",
